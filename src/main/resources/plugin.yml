@@ -1,0 +1,5 @@
+name: ServerPing
+author: dirtyequi
+main: org.lichtspiele.serverping.ServerPing
+version: 1.0
+startup: postworld
