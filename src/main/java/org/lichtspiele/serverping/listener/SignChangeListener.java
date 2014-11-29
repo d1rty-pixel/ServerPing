@@ -19,58 +19,63 @@ import org.lichtspiele.serverping.manager.SignManager;
 public class SignChangeListener implements Listener {
 	
 	@EventHandler(priority=EventPriority.HIGHEST)
-	public void Signit(SignChangeEvent event) {
-
-		// this is crap and throws an exception
-		Sign sign = (Sign) event.getBlock();
-		
-		// this works, but does not have effect on the "real world" block
-		//Sign sign = new CraftSign(event.getBlock());
-		sign.setLine(0, event.getLine(0));
-		sign.setLine(1, event.getLine(1));
-		sign.setLine(2, event.getLine(2));
-		sign.setLine(3, event.getLine(3));
-		sign.update(true);	
-		
-		if (!sign.getLine(0).trim().equals("[ServerPing]")) return;
-		
-		Messages messages = (Messages) ServerPing.getInstance().getMessages();
-		
-		if (!event.getPlayer().hasPermission("serverping.create")) {
-			try {
-				messages.insufficientPermission(event.getPlayer(), "serversign.create");
-			} catch (TranslationNotFoundException e) {
-				messages.missingTranslationFile(event.getPlayer(), ServerPing.getInstance().getConfig().getString("locale"));
-				ServerPing sp = (ServerPing) Bukkit.getPluginManager().getPlugin("ServerPing");
-				sp.disable(e, event.getPlayer());
+	public void onSignChange(SignChangeEvent event) 
+	{
+		Player player = event.getPlayer();
+		String Line1 = event.getLine(0);
+		String Line2 = event.getLine(1);
+		String Line3 = event.getLine(2);
+		if(Line1.equals("[ServerPing]") || Line1.equals(ChatColor.AQUA + "[ServerPing]"))
+		{
+			Messages messages = (Messages) ServerPing.getInstance().getMessages();
+			
+			if(player.hasPermission("serverping.create")
+			{
+				try {
+					messages.insufficientPermission(event.getPlayer(), "serversign.create");
+				} catch (TranslationNotFoundException e) {
+					messages.missingTranslationFile(event.getPlayer(), ServerPing.getInstance().getConfig().getString("locale"));
+					ServerPing sp = (ServerPing) Bukkit.getPluginManager().getPlugin("ServerPing");
+					sp.disable(e, event.getPlayer());
+				}
+			
+				return;
 			}
-			return;
-		}
 		
-		System.out.println(sign.getLine(0));
-		System.out.println(sign.getLine(1));
-		System.out.println(sign.getLine(2));
-		System.out.println(sign.getLine(3));
+			{
+				if(!Line2.equals(""))
+				{
+					if(!Line3.equals(""))
+					{
+					}
 		
-		String name 	= sign.getLine(1);
+		                        System.out.println(sign.getLine(0));
+		                        System.out.println(sign.getLine(1));
+		                        System.out.println(sign.getLine(2));
+		                        System.out.println(sign.getLine(3));
 		
-		try {
-			SignManager.register(event.getPlayer().getWorld().getName(), name, (Sign) sign);
-		} catch (SignAlreadyExistsException e) {
-			e.printStackTrace();
-		}
+		                        String name 	  = sign.getLine(1);
 		
-		// call sign/server init event
-		// ServerInitEvent requires a Sign object
-		Bukkit.getPluginManager().callEvent(new ServerInitEvent(sign, sign.getLocation(), new ArrayList<Block>()));
+		                        try {
+		                        	
+		       	                        SignManager.register(event.getPlayer().getWorld().getName(), name, (Sign) sign);
+		                        } catch (SignAlreadyExistsException e) {
+		                        	
+		                                e.printStackTrace();
+		                        }
 		
-		// tell the player what happened -> move to ServerInitEvent
-		try {
-			messages.signPlaced(event.getPlayer(), sign.getLine(1));
-		} catch (TranslationNotFoundException e) {
-			messages.missingTranslationFile(event.getPlayer(), ServerPing.getInstance().getConfig().getString("locale"));
-			ServerPing sp = (ServerPing) Bukkit.getPluginManager().getPlugin("ServerPing");
-			sp.disable(e, event.getPlayer());
-		}		
-	}	
-}
+		                        // call sign/server init event
+		                       // ServerInitEvent requires a Sign object
+		                       Bukkit.getPluginManager().callEvent(new ServerInitEvent(sign, sign.getLocation(), new ArrayList<Block>()));
+		
+		                      // tell the player what happened -> move to ServerInitEvent
+		                      try {
+			                messages.signPlaced(event.getPlayer(), sign.getLine(1));
+		                      } catch (TranslationNotFoundException e) {
+		                      	
+			                messages.missingTranslationFile(event.getPlayer(), ServerPing.getInstance().getConfig().getString("locale"));
+			                ServerPing sp = (ServerPing) Bukkit.getPluginManager().getPlugin("ServerPing");
+			                sp.disable(e, event.getPlayer());
+		                      }
+				}
+			}
