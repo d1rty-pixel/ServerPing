@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_7_R2.block.CraftSign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,7 +21,11 @@ public class SignChangeListener implements Listener {
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void Signit(SignChangeEvent event) {
 
-		Sign sign = new CraftSign(event.getBlock());
+		// this is crap and throws an exception
+		Sign sign = (Sign) event.getBlock();
+		
+		// this works, but does not have effect on the "real world" block
+		//Sign sign = new CraftSign(event.getBlock());
 		sign.setLine(0, event.getLine(0));
 		sign.setLine(1, event.getLine(1));
 		sign.setLine(2, event.getLine(2));
@@ -58,9 +61,10 @@ public class SignChangeListener implements Listener {
 		}
 		
 		// call sign/server init event
+		// ServerInitEvent requires a Sign object
 		Bukkit.getPluginManager().callEvent(new ServerInitEvent(sign, sign.getLocation(), new ArrayList<Block>()));
 		
-		// tell the player what happened
+		// tell the player what happened -> move to ServerInitEvent
 		try {
 			messages.signPlaced(event.getPlayer(), sign.getLine(1));
 		} catch (TranslationNotFoundException e) {
