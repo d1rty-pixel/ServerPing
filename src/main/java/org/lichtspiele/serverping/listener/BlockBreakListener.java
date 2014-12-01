@@ -2,6 +2,8 @@ package org.lichtspiele.serverping.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_7_R2.block.CraftSign;
 import org.bukkit.event.EventHandler;
@@ -23,13 +25,38 @@ public class BlockBreakListener implements Listener {
 		this.messages = (Messages) ServerPing.getInstance().getMessages();
 	}
 	
-	@EventHandler(priority=EventPriority.MONITOR)
-	public void onBlockBreak (BlockBreakEvent event) {		
-		if (!event.getBlock().getType().equals(Material.WALL_SIGN)) return;
-
-		Sign sign = new CraftSign(event.getBlock());
-		if (!sign.getLine(0).trim().equals("[ServerPing]")) return;
-
+	@EventHandler(priority=EventPriority.HIGHEST)
+	public void onBlockBreak (BlockBreakEvent event) {
+		
+		if (event.getBlock().getType().equals(Material.WALL_SIGN)) {
+			Sign sign = new CraftSign(event.getBlock());
+			if (sign.getLine(0).trim().equals("[ServerPing]")) {
+				this.handle(event, sign);
+			}
+		}
+		
+		BlockFace[] bf = new BlockFace[] {
+		    BlockFace.EAST,
+		    BlockFace.SOUTH,
+		    BlockFace.WEST,
+		    BlockFace.NORTH
+		};
+		Block b;
+		for (int i = 3; i >= 0; i--) {
+		    b = event.getBlock().getRelative(bf[(i)]);
+		
+		    if (b.getType().equals(Material.WALL_SIGN)) {
+		    	
+				Sign sign = new CraftSign(b);
+				if (sign.getLine(0).trim().equals("[ServerPing]")) {
+					this.handle(event, (Sign) sign);
+					break;
+				}
+			}
+		}
+	}
+	
+	private void handle(BlockBreakEvent event, Sign sign) {
 		if (!event.getPlayer().hasPermission("serverping.destroy")) {
 			try {
 				this.messages.insufficientPermission(event.getPlayer(), "serversign.destroy");
@@ -59,7 +86,9 @@ public class BlockBreakListener implements Listener {
 			
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
-		}		
+		}			
 	}
+	
+
 	
 }

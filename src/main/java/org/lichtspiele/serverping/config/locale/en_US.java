@@ -22,7 +22,8 @@ public class en_US extends CustomConfigurationFile {
 		data.put("sign_created",						"&fSign for server &b%sign% &f created");
 		data.put("sign_destroyed",						"&fSign for server &b%sign% &f destroyed");
 		
-		data.put("init",								"Initializing &ks&ki&kg&kn");
+		data.put("init_1",								"&kl&kl&kl&kl&kl");
+		data.put("init_2",								"Initializing");
 		data.put("server_online",						"&aonline");
 		data.put("server_offline",						"&coffline");
 

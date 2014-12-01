@@ -22,8 +22,12 @@ public class Messages extends MessageBase {
 		this.send(sender, message);
 	}
 	
-	public String serverIniitializing() throws TranslationNotFoundException {
-		return this.translation.getTranslation("init");
+	public String serverIniitializing1() throws TranslationNotFoundException {
+		return this.translation.getTranslation("init_1");
+	}
+	
+	public String serverIniitializing2() throws TranslationNotFoundException {
+		return this.translation.getTranslation("init_2");
 	}
 
 	public String serverOnline() throws TranslationNotFoundException {

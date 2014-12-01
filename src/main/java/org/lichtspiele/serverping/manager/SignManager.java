@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.lichtspiele.dbb.exception.CustomConfigurationFileNotFoundException;
 import org.lichtspiele.dbb.registry.CustomConfigurationRegistry;
+import org.lichtspiele.serverping.ServerPingSign;
 import org.lichtspiele.serverping.exception.SignAlreadyExistsException;
 
 public class SignManager {
@@ -100,17 +100,20 @@ public class SignManager {
 		SignManager.load();
 	}
 	
-	public static void register(String world, String name, Sign sign)
+	public static void register(ServerPingSign sps)
 			throws SignAlreadyExistsException {
 		
-		if (SignManager.signExists(name, world)) throw new SignAlreadyExistsException();
+		String name		= sps.getName();	
+		String world 	= sps.getLocation().getWorld().getName();
 		
+		if (SignManager.signExists(name, world)) throw new SignAlreadyExistsException();
+	
 		HashMap<String,Object> settings = new HashMap<String,Object>();
-		settings.put("address",		sign.getLine(2));
-		settings.put("port",		Integer.parseInt(sign.getLine(3)));
-		settings.put("X",			sign.getLocation().getBlockX());
-		settings.put("Y",			sign.getLocation().getBlockY());
-		settings.put("Z",			sign.getLocation().getBlockZ());
+		settings.put("address",		sps.getAddress());
+		settings.put("port",		sps.getPort());
+		settings.put("X",			sps.getLocation().getX());
+		settings.put("Y",			sps.getLocation().getY());
+		settings.put("Z",			sps.getLocation().getZ());
 
 		// just to be safe
 		SignManager.createWorld(world);
@@ -148,5 +151,5 @@ public class SignManager {
 			return false;
 		} 
 	}
-	
+
 }
